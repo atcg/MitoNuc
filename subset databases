@@ -1,3 +1,11 @@
+#First create super-database aliases the hold all databases of a certain
+#molecule type (can't mix nucleotide and protein databases)
+blastdb_aliastool -dblist "nt human_genomic refseq_genomic other_genomic refseqgene wgs human_genomic_transcript refseq_rna" -dbtype nucl -out all_nuc_db -title all_nuc_db
+blastdb_aliastool -dblist "nr refseq_protein" -out all_prot_db -title all_prot_db
+
+#Use the taxon database to create taxID subsets for all of a certain family/order/etc...
+#Or use BioPerl/NCBI e-utils (YES!)
+
 blastdbcmd -db nr -entry all -outfmt "%g %T" | \
 awk ' { if ($2 == 9606) { print $1 } } ' > gilist1.txt
 
