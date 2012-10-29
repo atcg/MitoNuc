@@ -1,0 +1,4 @@
+blastdbcmd -db nr -entry all -outfmt "%g %T" | \
+awk ' { if ($2 == 9606) { print $1 } } ' > gilist1.txt
+
+blastdbaliastool -gilist outputGIs.txt -db nr -out nrvertebartes -title nrvertebrates

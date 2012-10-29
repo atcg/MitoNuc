@@ -1,0 +1,46 @@
+#!/bin/bash
+
+#updateblastdb (shell script)
+#By Evan McCartney-Melstad
+#evanmelstad@ucla.edu
+#10/20.2012
+
+#This script downloads/updates the following NCBI Blast Databases:
+#   nr
+#   nt
+#   other_genomic
+#   refseq_genomic
+#   refseq_protein
+#   refseqgene
+#   taxdb
+#   wgs
+#   human_genomic
+#   human_genomic_transcript
+#   refseq_rna
+#SHOULD I ADD EST_HUMAN, EST_MOUSE, AND EST_OTHERS????
+LOGFILE="/mnt/Data1/blastdb/updateblastdb_log_$(date +%B_%d_%Y--%I_%M%p)"
+
+#Print time and date for log file purposes
+echo "*****************************************" 2>&1 | tee --append $LOGFILE
+echo "Updating Blast database, initialized at: " 2>&1 | tee --append $LOGFILE
+date 2>&1 | tee --append $LOGFILE
+echo "*****************************************" 2>&1 | tee --append $LOGFILE
+
+#navigate to folder where raw (zipped and tarred) database files are held
+cd /mnt/Data1/blastdb/
+
+#run the perl update script from NCBI to download the raw files
+perl update_blastdb.pl nr nt other_genomic refseq_genomic refseq_protein refseqgene taxdb wgs human_genomic human_genomic_transcript refseq_rna --decompress 2>&1 | tee --append $LOGFILE
+
+#Check exit status of the perl script. 0 means no downloads, 1 means successful downloads, 2 means errors.
+RETVAL=$?
+[ $RETVAL -eq 0 ] && echo 'update_blastdb.pl executed successfully.' 2>&1 | tee --append $LOGFILE
+[ $RETVAL -eq 1 ] && echo 'update_blastdb.pl executed successfully.' 2>&1 | tee --append $LOGFILE
+[ $RETVAL -eq 2 ] && echo 'Error. update_blastdb.pl not executed successfully.' 2>&1 | tee --append $LOGFILE
+
+mutt -s "Blast DB update status. $(date)" evanmelstad@gmail.com -a $LOGFILE < $LOGFILE
+#Now download the FASTA databases that I want from NCBI:
+#   mito.aa.gz
+#   mito.nt.gz
+#   
+#
