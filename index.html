@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>MitoNuc by atcg</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1 class="header">MitoNuc</h1>
+        <p class="header"></p>
+
+        <ul>
+          <li class="download"><a class="buttons" href="https://github.com/atcg/MitoNuc/zipball/master">Download ZIP</a></li>
+          <li class="download"><a class="buttons" href="https://github.com/atcg/MitoNuc/tarball/master">Download TAR</a></li>
+          <li><a class="buttons github" href="https://github.com/atcg/MitoNuc">View On GitHub</a></li>
+        </ul>
+
+        <p class="header">This project is maintained by <a class="header name" href="https://github.com/atcg">atcg</a></p>
+
+
+      </header>
+      <section>
+        <h1>MitoNuc</h1>
+
+<p>Evan McCartney-Melstad</p>
+
+<p>This is a set of tools that will be used to do a few things:</p>
+
+<ul>
+<li> make many subsets of NCBI databases</li>
+<li> run clustering analyses on these sub-databases</li>
+<li> run phylogenetic analyses on the resulting nucleotide/protein clusters</li>
+</ul><p>This software was written on a Linux machine. It should work cross-platform,
+however, as long as Perl, BioPerl, BioPerl-run, and blast+2.2.27 are installed
+and configured correctly. See below for some tips on that.</p>
+
+<p>MitoNuc requires several things to function. Among these are:</p>
+
+<ul>
+<li> BioPerl-live (latest version of BioPerl from GitHub)</li>
+<li> BioPerl-run (latest version from GitHub)</li>
+<li> blast+2.2.27</li>
+<li> Perl needs to know where to find the bioperl-run and bioperl-live modules
+
+<ul>
+<li> can do this by modifying the $PERL5LIB environmental variable</li>
+<li> for instance: export PERL5LIB="$HOME/bioperl/bioperl-live:$HOME/bioperl/bioperl-run/lib:$PERL5LIB"</li>
+</ul>
+</li>
+<li> Perl needs to know where to find the blast+ binaries
+
+<ul>
+<li> do this by setting the $BLASTPLUSDIR environmental variable</li>
+</ul>
+</li>
+<li> Perl needs to know where to find the blast(+) databases
+
+<ul>
+<li> must set the $BLASTDB environmental variable to point to the databases
+(which you must download)</li>
+</ul>
+</li>
+</ul>
+      </section>
+      <footer>
+        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+		
+  </body>
+</html>
