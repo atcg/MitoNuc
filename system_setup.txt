@@ -25,9 +25,23 @@ export PERL5LIB="$HOME/bioPerl/bioperl-live:$HOME/bioPerl/bioperl-run/lib:$PERL5
 export BLASTPLUSDIR="$HOME/blast/bin"
 export BLASTDB="/mnt/Data1/blastdb"
 
+#must log out and log back in for $PATH to update from ~/.profile
+
 #If you want to update bioperl-live or bioperl-run to newest code, do so like this:
 cd ~/bioPerl/bioperl-live
 git pull git://github.com/bioperl/bioperl-live.git
 cd ~/bioPerl/bioperl-run
 git pull git://github.com/bioperl/bioperl-run.git
 
+#Download CD-HIT and compile
+cd ~/bin
+wget https://cdhit.googlecode.com/files/cd-hit-v4.6.1-2012-08-27.tgz
+tar -zxvf cd-hit-v4.6.1-2012-08-27.tgz
+cd cd-hit-v4.6.1-2012-08-27
+make openmp=yes
+
+#Add CD-HIT binaries to $PATH
+sudo gedit ~/.profile
+export PATH="$PATH:$HOME/bin/cd-hit-v4.6.1-2012-08-27"
+
+#must log out and log back in for $PATH to update from ~/.profile
