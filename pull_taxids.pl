@@ -3,32 +3,25 @@
 use strict;
 use warnings;
 use Bio::DB::Taxonomy;
-use Bio::DB::Taxonomy::entrez;
 
-my $db = Bio::DB::Taxonomy->new(-source => 'entrez');
-
-my $taxonid = 54318;
-
-# get a taxon
-my $taxon = $db->get_taxon(-taxonid => $taxonid);
-
-my @taxa = $db->get_all_Descendents($taxon);
-
-print @taxa;
-
-
-
-
-#TRY THIS BELOW
 #MUST USE DOWNLOADED TAXONOMY FLATFILE
-
-my $dbdir = '/db/taxonomy/ncbi/'; #downloaded data from NCBI taxdump into this directory
+my $dbdir = '/home/evan/Desktop/src/MitoNuc/db'; #downloaded data from NCBI taxdump into this directory
 my $db = Bio::DB::Taxonomy->new(-source => 'flatfile',
                                  -nodesfile => "$dbdir/nodes.dmp",
                                  -namesfile => "$dbdir/names.dmp",
                                  );
-my $taxa = $db->get_taxon(-taxonid => 151341);
-my @d = $db->get_all_Descendents($taxa);
+my $taxa = $db->get_taxon(-taxonid => 8948);
+my @childNodes = $db->get_all_Descendents($taxa);
+
+#Extract the elements of @childNodes that are of species rank into new array
+my @childSpecies;
+foreach my $subnode (@childSpecies) {
+    #if $subnode is a species:
+        #push to @childSpecies
+}
+
 
 print join("\n", map { $_->id . " " . $_->rank . " " .
-$_->scientific_name } @d), "\n";
+$_->scientific_name } @childNodes), "\n";
+
+print "Total number of subnodes under parent taxonomy node: ", scalar(@childNodes), "\n";
