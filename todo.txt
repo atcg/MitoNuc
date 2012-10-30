@@ -1,0 +1,5 @@
+NCBI Genome workbench
+NCBI eutilities
+Straight bioperl--get_all_Descendents (http://search.cpan.org/~cjfields/BioPerl-1.6.1/Bio/DB/Taxonomy.pm#get_all_Descendents)
+Download taxonomy flatfiles from NCBI FTP and parse
+
