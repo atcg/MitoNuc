@@ -20,6 +20,7 @@ print @taxa;
 
 
 #TRY THIS BELOW
+#MUST USE DOWNLOADED TAXONOMY FLATFILE
 
 my $dbdir = '/db/taxonomy/ncbi/'; #downloaded data from NCBI taxdump into this directory
 my $db = Bio::DB::Taxonomy->new(-source => 'flatfile',
