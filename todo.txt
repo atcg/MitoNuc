@@ -2,4 +2,5 @@ NCBI Genome workbench
 NCBI eutilities
 Straight bioperl--get_all_Descendents (http://search.cpan.org/~cjfields/BioPerl-1.6.1/Bio/DB/Taxonomy.pm#get_all_Descendents)
 Download taxonomy flatfiles from NCBI FTP and parse
-
+Change updateblastdb.sh to include updating the taxonomy used in the scripts
+Change updateblastdb.sh to also create the database aliases that I want
