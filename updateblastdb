@@ -38,6 +38,44 @@ echo "*****************************************" 2>&1 | tee --append $LOGFILE
 #navigate to folder where raw (zipped and tarred) database files are held
 cd /mnt/Data1/blastdb/
 
+#Download the mitochondrial FASTA databases and unzip them
+#since the mitochondrial files aren't very big, just keep the gz files on disk after unzipping
+wget -N ftp://ftp.ncbi.nih.gov/blast/db/FASTA/mito.aa.gz
+wget -N ftp://ftp.ncbi.nih.gov/blast/db/FASTA/mito.aa.gz.md5
+#check the integrity of the download
+perl checkmd5.pl --file2hash mito.aa.gz --md5file mito.aa.gz.md5
+if [ $? == 0 ];
+then
+    echo "mito.aa.gz downloaded successfully (computed checksum matches NCBI checksum)."
+else
+    echo "downloaded mito.aa.gz computed checksum does not match NCBI checksum. YOU MUST REDOWNLOAD."
+fi
+
+wget -N ftp://ftp.ncbi.nih.gov/blast/db/FASTA/mito.nt.gz
+wget -N ftp://ftp.ncbi.nih.gov/blast/db/FASTA/mito.nt.gz.md5
+#check the integrity of the download
+perl checkmd5.pl --file2hash mito.nt.gz --md5file mito.nt.gz.md5
+if [ $? == 0 ];
+then
+    echo "mito.nt.gz downloaded successfully (computed checksum matches NCBI checksum)."
+else
+    echo "downloaded mito.nt.gz computed checksum does not match NCBI checksum. YOU MUST REDOWNLOAD."
+fi
+
+#unpack
+tar -zxvf mito.aa.gz
+tar -zxvf mito.aa.gz.md5
+tar -zxvf mito.nt.gz
+tar -zxvf mito.nt.gz.md5
+
+
+ 
+[ "$a" = "$b" ] && echo  "Equal" || echo "Not Equal"
+
+
+#convert the mitochondrial FASTA databases into blast DBs
+
+
 #run the perl update script from NCBI to download the raw files
 perl update_blastdb.pl nr nt other_genomic refseq_genomic refseq_protein refseqgene taxdb wgs human_genomic human_genomic_transcript refseq_rna est est_human est_mouse est_others htgs sts gss tsa_nt cdd_delta --decompress 2>&1 | tee --append $LOGFILE
 
