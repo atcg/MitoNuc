@@ -8,9 +8,7 @@ use Bio::DB::Taxonomy;
 my @vertFamilies = getChildTaxa(7742, 'family');
 print scalar(@vertFamilies);
 
-#create one giant file that has in the first column GI#, and second row taxon ID
-#system('blastdbcmd -db !!NUCDBALIAS!! -dbtype nucl -entry all -out nuc_gi_taxa_key.txt -outfmt "%g %T"');
-#system('blastdbcmd -db !!PROTDBALIAS!! -dbtype prot -entry all -out prot_gi_taxa_key.txt -outfmt "%g %T"');
+
 
 unless(-d "gi_lists") {
     mkdir "gi_lists" or die "can't mkdir gi_lists: $!";
@@ -22,9 +20,10 @@ foreach my $family (@vertFamilies) {
     open my $fh, '>', $filename;
     }
 
+
+
 sub getChildTaxa
 {
-
 #first check to make sure our input parameters are correct:
     if ((scalar(@_) == 1 or scalar(@_) == 2) && $_[0] =~ /^\d+/)
     {    
@@ -52,5 +51,4 @@ sub getChildTaxa
     } else {
         die "Must provide a single integer value (taxon ID) to getChildSpecies";
     }
-    
 }
