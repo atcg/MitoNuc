@@ -17,7 +17,16 @@
 #   human_genomic
 #   human_genomic_transcript
 #   refseq_rna
-#SHOULD I ADD EST_HUMAN, EST_MOUSE, AND EST_OTHERS????
+#   est
+#   est_human
+#   est_mouse
+#   est_others
+#   htgs
+#   sts
+#   gss
+#   tsa_nt
+#   cdd_delta
+
 LOGFILE="/mnt/Data1/blastdb/updateblastdb_log_$(date +%B_%d_%Y--%I_%M%p)"
 
 #Print time and date for log file purposes
@@ -30,7 +39,7 @@ echo "*****************************************" 2>&1 | tee --append $LOGFILE
 cd /mnt/Data1/blastdb/
 
 #run the perl update script from NCBI to download the raw files
-perl update_blastdb.pl nr nt other_genomic refseq_genomic refseq_protein refseqgene taxdb wgs human_genomic human_genomic_transcript refseq_rna --decompress 2>&1 | tee --append $LOGFILE
+perl update_blastdb.pl nr nt other_genomic refseq_genomic refseq_protein refseqgene taxdb wgs human_genomic human_genomic_transcript refseq_rna est est_human est_mouse est_others htgs sts gss tsa_nt cdd_delta --decompress 2>&1 | tee --append $LOGFILE
 
 #Check exit status of the perl script. 0 means no downloads, 1 means successful downloads, 2 means errors.
 RETVAL=$?

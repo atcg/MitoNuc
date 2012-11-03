@@ -4,9 +4,16 @@ blastdb_aliastool -dblist "nt human_genomic refseq_genomic other_genomic refseqg
 blastdb_aliastool -dblist "nr refseq_protein" -out all_prot_db -title all_prot_db
 
 #Use the taxon database to create taxID subsets for all of a certain family/order/etc...
-#Or use BioPerl/NCBI e-utils (YES!)
+#Or use BioPerl (YES!)
 
 blastdbcmd -db nr -entry all -outfmt "%g %T" | \
 awk ' { if ($2 == 9606) { print $1 } } ' > gilist1.txt
 
 blastdbaliastool -gilist outputGIs.txt -db nr -out nrvertebartes -title nrvertebrates
+
+nt: 16,656,782 sequences. 42,886,208,842 total bases.
+wgs: 71,995,253 sequences. 333,716,365,522 total bases
+refseq_genomic: 2,337,925 sequences. 181,601,777,170 total bases
+
+
+nr: 21,235,771 sequences. 7,274,224,973 total residues.
