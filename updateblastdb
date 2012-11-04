@@ -84,8 +84,8 @@ blastdb_aliastool -dblist "nt human_genomic refseq_genomic other_genomic refseqg
 blastdb_aliastool -dblist "nr refseq_protein" -dbtype prot -out allProt -title allProt | tee --append $LOGFILE
 
 #create one super-giant file that has in the first column GI#, and second row taxon ID
-blastdbcmd -db allNuc -dbtype nucl -entry all -out nuc_gi_taxa_key.txt -outfmt "%g %T" | tee --append $LOGFILE
-blastdbcmd -db allProt -dbtype prot -entry all -out prot_gi_taxa_key.txt -outfmt "%g %T" | tee --append $LOGFILE
+blastdbcmd -db allNuc -dbtype nucl -entry all -out allnuc_taxa_key.txt -outfmt "%T %g" | tee --append $LOGFILE
+blastdbcmd -db allProt -dbtype prot -entry all -out allprot_taxa_key.txt -outfmt "%T %g" | tee --append $LOGFILE
 
 mutt -s "Blast DB update status. $(date)" evanmelstad@gmail.com -a $LOGFILE < $LOGFILE
 
