@@ -1,2 +1,3 @@
 1. Taxa include species and subspecies according to NCBI taxonomy
-2. 
+2. Looking at all vertebrate families as subsets
+3. Does it make sense to do this analysis using NCBI taxonomy to subset?
