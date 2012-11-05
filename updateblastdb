@@ -90,9 +90,22 @@ blastdb_aliastool -dblist "nr refseq_protein" -dbtype prot -out allProt -title a
 #Good code below:
 #zgrep '[[:space:]]7897$' blast/gi_taxid_nucl.dmp.gz | awk '{print $1}' > coelagi1.txt
 
-#Download the files gi_taxid_nucl.dmp.gz and gi_taxid_prot.dmp.gz from NCBI
-wget -N ftp://ftp.ncbi.nih.gov/pub/taxonomy/gi_taxid_nucl.dmp.gz
-wget -N ftp://ftp.ncbi.nih.gov/pub/taxonomy/gi_taxid_prot.dmp.gz
+#Download taxonomy data from NCBI
+wget -N ftp://ftp.ncbi.nih.gov/pub/taxonomy/gi_taxid_nucl.dmp.gz | tee --append $LOGFILE
+wget -N ftp://ftp.ncbi.nih.gov/pub/taxonomy/gi_taxid_prot.dmp.gz | tee --append $LOGFILE
+
+wget -N ftp://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz | tee --append $LOGFILE
+wget -N ftp://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz.md5 | tee --append $LOGFILE
+perl checkmd5.pl --file2hash taxdump.tar.gz --md5file taxdump.tar.gz.md5 | tee --append $LOGFILE
+
+if [ $? == 0 ];
+then
+    echo "taxdump.tar.gz downloaded successfully (computed checksum matches NCBI checksum)." | tee --append $LOGFILE
+else
+    echo "downloaded taxdump.tar.gz computed checksum does not match NCBI checksum. YOU MUST REDOWNLOAD." | tee --append $LOGFILE
+fi
+
+tar -zxvf taxdump.tar.gz | tee --append $LOGFILE
 
 mutt -s "Blast DB update status. $(date)" evanmelstad@gmail.com -a $LOGFILE < $LOGFILE
 

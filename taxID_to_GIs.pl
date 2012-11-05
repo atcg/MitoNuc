@@ -3,6 +3,7 @@
 use strict;
 use warnings;
 use Bio::DB::Taxonomy;
+use Env qw(BLASTDB);
 
 #First we create the master hash that will be used for taxID lookup and sorting
 #There needs to be the ginormous gi-taxid columned files in the /mnt/Data1/blastdb
@@ -46,33 +47,42 @@ foreach my $loopFamily (@vertFamilies) {
     print "$counter of ", scalar(@vertFamilies), " families processed...\n";
 }
 print "Hash of all species within each family of interest created!\n";
-print "Setting up gi directory structure";
+print "Setting up gi directory structure.\n";
 
 #Now we process the hash to print to gi files
 #First we set up our files and directory
 unless(-d "gi_lists") {
     mkdir "gi_lists" or die "can't mkdir gi_lists: $!";
 }
+my $familyCounter = 0;
 foreach my $familyKey (sort keys %vertFamilySpecies) {
     #first create file that will contain all the gi's for that molecule type for
     #that family the filename will be familytaxid.txt. So for Apistidae it would
     #be 990930.txt
     my $filename = "gi_lists/" . $familyKey . '.txt';
     open my $fh, '>', $filename;
+    $familyCounter ++;
+    print "***Processing family #", $familyCounter, " of ", scalar(@vertFamilies), "***\n";
     #as we iterate through each key of the above hash, we need to iterate through
     #the array stored in the hash value and print the values from %taxgi. Each
     #gi should be separated by a newline.
+    my $speciesCounter = 0;
         foreach my $VSpecies (@{$vertFamilySpecies{$familyKey}}) {
         #Iterate through each species within a family, and store the GIs that we
         #harvest from gi_taxid_nucl.dmp.gz into a single scalar variable, which
         #we then print to the end of the file for the corresponding family
-        my $VSpeciesGIs = `zgrep "[[:space:]]$VSpecies\$" /mnt/Data1/blastdb/gi_taxid_nucl.dmp.gz`;
+        $speciesCounter ++;
+        my $VSpeciesGIs = `zgrep "[[:space:]]$VSpecies\$" $BLASTDB/gi_taxid_nucl.dmp.gz | awk '{print \$1}'`;
         print $fh $VSpeciesGIs;
+        print "Processing species #$speciesCounter of ", scalar(@{$vertFamilySpecies{$familyKey}}), ".\n"
         #TODO! Add some sort of checkpointing here to show how many species have been
         #processed and how many remain
     }
 }
 #zgrep '[[:space:]]7897$' blast/gi_taxid_nucl.dmp.gz | awk '{print $1}' > coelagi1.txt
+
+#TODO! Add a message saying execution completed successfully
+
 
 
 
@@ -82,7 +92,7 @@ sub getChildTaxa
 #two taxonomy levels (family, species, subspecies, etc...) after the taxID:
     if ((scalar(@_) == 2 or scalar(@_) == 3) && $_[0] =~ /^\d+/)
     {    
-        my $dbdir = 'db'; #this is a dir containing nodes.dmp and names.dmp from ncbi
+        my $dbdir = $BLASTDB; #this is a dir containing nodes.dmp and names.dmp from ncbi
         my $db = Bio::DB::Taxonomy->new(-source => 'flatfile',
                                         -nodesfile => "$dbdir/nodes.dmp",
                                         -namesfile => "$dbdir/names.dmp",
