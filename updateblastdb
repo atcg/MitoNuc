@@ -83,9 +83,16 @@ RETVAL=$?
 blastdb_aliastool -dblist "nt human_genomic refseq_genomic other_genomic refseqgene wgs refseq_rna" -dbtype nucl -out allNuc -title allNuc | tee --append $LOGFILE
 blastdb_aliastool -dblist "nr refseq_protein" -dbtype prot -out allProt -title allProt | tee --append $LOGFILE
 
-#create one super-giant file that has in the first column GI#, and second row taxon ID
-blastdbcmd -db allNuc -dbtype nucl -entry all -out allnuc_taxa_key.txt -outfmt "%T %g" | tee --append $LOGFILE
-blastdbcmd -db allProt -dbtype prot -entry all -out allprot_taxa_key.txt -outfmt "%T %g" | tee --append $LOGFILE
+##create one super-giant file that has in the first column GI#, and second row taxon ID
+##ACTUALLY hold off on this, try to use gi_taxid_nucl.dmp and gi_taxid_prot.dmp instead
+#blastdbcmd -db allNuc -dbtype nucl -entry all -out allnuc_taxa_key.txt -outfmt "%T %g" | tee --append $LOGFILE
+#blastdbcmd -db allProt -dbtype prot -entry all -out allprot_taxa_key.txt -outfmt "%T %g" | tee --append $LOGFILE
+#Good code below:
+#zgrep '[[:space:]]7897$' blast/gi_taxid_nucl.dmp.gz | awk '{print $1}' > coelagi1.txt
+
+#Download the files gi_taxid_nucl.dmp.gz and gi_taxid_prot.dmp.gz from NCBI
+wget -N ftp://ftp.ncbi.nih.gov/pub/taxonomy/gi_taxid_nucl.dmp.gz
+wget -N ftp://ftp.ncbi.nih.gov/pub/taxonomy/gi_taxid_prot.dmp.gz
 
 mutt -s "Blast DB update status. $(date)" evanmelstad@gmail.com -a $LOGFILE < $LOGFILE
 

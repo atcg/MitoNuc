@@ -10,24 +10,26 @@ use Bio::DB::Taxonomy;
 #We create a ginormous hash first that puts makes the first value of each row
 #(the gi number) the hash key, #and the second value of each row (the taxon ID)
 #the hash value
-open( my $txIDgi_fh, "<", '/mnt/Data1/blastdb/allnuc_taxa_key.txt' )
-  or die "Can't read /mnt/Data1/blastdb/allnuc_taxa_key.txt: $!\n";
 
-my %taxgi;
-while ( defined( my $txgi_row = <$txIDgi_fh> ) ) {
-    my $row = $txgi_row =~ /(\d+)\s(\d+)/;
-    my $taxonID = $1;
-    my $gi = $2;
-    #push the gi to the end of the hash value for the corresponding key (taxonID)
-    push (@{$taxgi{$taxonID}}, $gi);
-}
-print "Ginormous (94 million key-value pairs?) taxID - GI hash created!\n";
-close $txIDgi_fh;
+#LET'S TRY TO DO THIS WITH ZGREP AND gi_taxid_nucl.dmp.gz INSTEAD!
+###open( my $txIDgi_fh, "<", '/mnt/Data1/blastdb/allnuc_taxa_key.txt' )
+###  or die "Can't read /mnt/Data1/blastdb/allnuc_taxa_key.txt: $!\n";
+###
+###my %taxgi;
+###while ( defined( my $txgi_row = <$txIDgi_fh> ) ) {
+###    my $row = $txgi_row =~ /(\d+)\s(\d+)/;
+###    my $taxonID = $1;
+###    my $gi = $2;
+###    #push the gi to the end of the hash value for the corresponding key (taxonID)
+###    push (@{$taxgi{$taxonID}}, $gi);
+###}
+###print "Ginormous (94 million key-value pairs?) taxID - GI hash created!\n";
+###close $txIDgi_fh;
 
 #Now we create a hash of all the taxon IDs of all vertebrate families
 #This should be an array of length 971, with all integer values. 7742 is the
-#taxonID for vertebrates
-my @vertFamilies = getChildTaxa(7742, 'family');
+#taxonID for vertebrates. 8948 is for Falconiformes (fewer taxa for testing)
+my @vertFamilies = getChildTaxa(8948, 'family');
 print "Array of all ", scalar(@vertFamilies), " families created!\n";
 
 #Now, for each family, we want to create an array of taxonIDs that correspond to
@@ -43,7 +45,8 @@ foreach my $loopFamily (@vertFamilies) {
     $counter ++;
     print "$counter of ", scalar(@vertFamilies), " families processed...\n";
 }
-print "Hash of all species within each vertebrate family created!\n";
+print "Hash of all species within each family of interest created!\n";
+print "Setting up gi directory structure";
 
 #Now we process the hash to print to gi files
 #First we set up our files and directory
@@ -59,10 +62,19 @@ foreach my $familyKey (sort keys %vertFamilySpecies) {
     #as we iterate through each key of the above hash, we need to iterate through
     #the array stored in the hash value and print the values from %taxgi. Each
     #gi should be separated by a newline.
-    foreach my $VSpecies (@{$vertFamilySpecies{$familyKey}}) {
-        print $fh map { "$_\n" } @{$taxgi{$VSpecies}};
+        foreach my $VSpecies (@{$vertFamilySpecies{$familyKey}}) {
+        #Iterate through each species within a family, and store the GIs that we
+        #harvest from gi_taxid_nucl.dmp.gz into a single scalar variable, which
+        #we then print to the end of the file for the corresponding family
+        my $VSpeciesGIs = `zgrep "[[:space:]]$VSpecies\$" /mnt/Data1/blastdb/gi_taxid_nucl.dmp.gz`;
+        print $fh $VSpeciesGIs;
+        #TODO! Add some sort of checkpointing here to show how many species have been
+        #processed and how many remain
     }
 }
+#zgrep '[[:space:]]7897$' blast/gi_taxid_nucl.dmp.gz | awk '{print $1}' > coelagi1.txt
+
+
 
 sub getChildTaxa
 {
