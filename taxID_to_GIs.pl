@@ -79,7 +79,6 @@ foreach my $familyKey (sort keys %vertFamilySpecies) {
         #processed and how many remain
     }
 }
-#zgrep '[[:space:]]7897$' blast/gi_taxid_nucl.dmp.gz | awk '{print $1}' > coelagi1.txt
 
 #TODO! Add a message saying execution completed successfully
 
