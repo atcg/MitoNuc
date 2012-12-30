@@ -5,6 +5,10 @@ use warnings;
 use Bio::DB::Taxonomy;
 use Env qw(BLASTDB);
 
+if ($^O eq "darwin") {
+    print "Mac OS detected.\n"
+}
+
 #First we create the master hash that will be used for taxID lookup and sorting
 #There needs to be the ginormous gi-taxid columned files in the /mnt/Data1/blastdb
 #directory. These should be called nuc_gi_taxa_key.txt and prot_gi_taxa_key.txt
@@ -60,7 +64,7 @@ foreach my $familyKey (sort keys %vertFamilySpecies) {
     #that family the filename will be familytaxid.txt. So for Apistidae it would
     #be 990930.txt
     my $filename = "gi_lists/" . $familyKey . '.txt';
-    open my $fh, '>', $filename;
+    open(my $fh, '>', $filename) or die "Couldn't open: $!\n";
     $familyCounter ++;
     print "***Processing family #", $familyCounter, " of ", scalar(@vertFamilies), "***\n";
     #as we iterate through each key of the above hash, we need to iterate through
@@ -72,7 +76,11 @@ foreach my $familyKey (sort keys %vertFamilySpecies) {
         #harvest from gi_taxid_nucl.dmp.gz into a single scalar variable, which
         #we then print to the end of the file for the corresponding family
         $speciesCounter ++;
-        my $VSpeciesGIs = `zgrep "[[:space:]]$VSpecies\$" $BLASTDB/gi_taxid_nucl.dmp.gz | awk '{print \$1}'`;
+        
+        #GNU grep is so much faster--if using on a Mac then use the locally installed
+        #version of GNU grep in /usr/local/bin instead of system grep. Can use zgrep
+        #in Linux machines
+        my $VSpeciesGIs = `/usr/local/bin/grep "[[:space:]]$VSpecies\$" $BLASTDB/gi_taxid_nucl.dmp | awk '{print \$1}'`;
         print $fh $VSpeciesGIs;
         print "Processing species #$speciesCounter of ", scalar(@{$vertFamilySpecies{$familyKey}}), ".\n"
         #TODO! Add some sort of checkpointing here to show how many species have been
