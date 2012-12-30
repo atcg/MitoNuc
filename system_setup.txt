@@ -46,3 +46,7 @@ export PATH="$PATH:$HOME/bin/cd-hit-v4.6.1-2012-08-27"
 
 #must log out and log back in for $PATH to update from ~/.profile
 
+Make sure the GNU version of grep is installed in /usr/local/bin
+
+
+

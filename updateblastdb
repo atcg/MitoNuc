@@ -94,6 +94,10 @@ blastdb_aliastool -dblist "nr refseq_protein" -dbtype prot -out allProt -title a
 wget -N ftp://ftp.ncbi.nih.gov/pub/taxonomy/gi_taxid_nucl.dmp.gz | tee --append $LOGFILE
 wget -N ftp://ftp.ncbi.nih.gov/pub/taxonomy/gi_taxid_prot.dmp.gz | tee --append $LOGFILE
 
+#Use gzip to unzip gi_taxid files
+gzip -d gi_taxid_nucl.dmp.gz | tee --append $LOGFILE
+gzip -d gi_taxid_prot.dmp.gz | tee --append $LOGFILE
+
 wget -N ftp://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz | tee --append $LOGFILE
 wget -N ftp://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz.md5 | tee --append $LOGFILE
 perl checkmd5.pl --file2hash taxdump.tar.gz --md5file taxdump.tar.gz.md5 | tee --append $LOGFILE
