@@ -39,6 +39,6 @@ if ($taxID == 8948) {
 print "Higher Level Taxon ID: $taxID.\n";
 
 print "Creating GI lists for every family found within taxon ID $taxID.\n";
-system("taxID_to_GIs.pl -taxID $taxID");
+system("perl taxID_to_GIs.pl -taxID $taxID");
 
 
