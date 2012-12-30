@@ -3,7 +3,9 @@
 use strict;
 use warnings;
 use Bio::DB::Taxonomy;
-use Env qw(BLASTDB);
+use Env qw(BLASTDB); #This creates the variable $BLASTDB in Perl, which is equal
+                     #to the system environmental variable $BLASTDB
+use Getopt::Long;
 
 #First we create the master hash that will be used for taxID lookup and sorting
 #There needs to be the ginormous gi-taxid columned files in the /mnt/Data1/blastdb
@@ -30,7 +32,7 @@ use Env qw(BLASTDB);
 #Now we create a hash of all the taxon IDs of all vertebrate families
 #This should be an array of length 971, with all integer values. 7742 is the
 #taxonID for vertebrates. 8948 is for Falconiformes (fewer taxa for testing)
-my @vertFamilies = getChildTaxa(8948, 'family');
+my @vertFamilies = getChildTaxa(7742, 'family');
 print "Array of all ", scalar(@vertFamilies), " families created!\n";
 
 #Now, for each family, we want to create an array of taxonIDs that correspond to
@@ -62,7 +64,7 @@ foreach my $familyKey (sort keys %vertFamilySpecies) {
     my $filename = "gi_lists/" . $familyKey . '.txt';
     open(my $fh, '>', $filename) or die "Couldn't open: $!\n";
     $familyCounter ++;
-    print "***Processing family #", $familyCounter, " of ", scalar(@vertFamilies), "***\n";
+    print "***Processing family #", $familyCounter, " of ", scalar(@vertFamilies), ". (Family taxID: $familyKey***\n";
     #as we iterate through each key of the above hash, we need to iterate through
     #the array stored in the hash value and print the values from %taxgi. Each
     #gi should be separated by a newline.
@@ -79,13 +81,10 @@ foreach my $familyKey (sort keys %vertFamilySpecies) {
         my $VSpeciesGIs = `/usr/local/bin/grep "[[:space:]]$VSpecies\$" $BLASTDB/gi_taxid_nucl.dmp | awk '{print \$1}'`;
         print $fh $VSpeciesGIs;
         print "Processing species #$speciesCounter of ", scalar(@{$vertFamilySpecies{$familyKey}}), ".\n"
-        #TODO! Add some sort of checkpointing here to show how many species have been
-        #processed and how many remain
     }
 }
 
-#TODO! Add a message saying execution completed successfully
-
+print "Finished printing GIs for each family to individual files.\n"
 
 
 
