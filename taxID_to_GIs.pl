@@ -5,10 +5,6 @@ use warnings;
 use Bio::DB::Taxonomy;
 use Env qw(BLASTDB);
 
-if ($^O eq "darwin") {
-    print "Mac OS detected.\n"
-}
-
 #First we create the master hash that will be used for taxID lookup and sorting
 #There needs to be the ginormous gi-taxid columned files in the /mnt/Data1/blastdb
 #directory. These should be called nuc_gi_taxa_key.txt and prot_gi_taxa_key.txt
