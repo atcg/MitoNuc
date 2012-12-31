@@ -30,7 +30,7 @@ use strict;
 use warnings;
 use Getopt::Long;
 
-my $taxID = 8948; #default to falconiformes (for testing)
+my $taxID = 8948; #default to falconiformes (for testing). Vertebrata is 7742.
 GetOptions ("taxid=i" => \$taxID);
 if ($taxID == 8948) {
    print "taxID not set by user. Using falconiformes (8948) as example.\n";
