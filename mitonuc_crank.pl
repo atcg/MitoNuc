@@ -38,7 +38,12 @@ if ($taxID == 8948) {
 
 print "Higher Level Taxon ID: $taxID.\n";
 
+#1.
 print "Creating GI lists for every family found within taxon ID $taxID.\n";
 system("perl taxID_to_GIs.pl -taxID $taxID");
+
+#2.
+print "Subsetting blast databases with GIs from each family.\n";
+#system("blastdbcmd ...");
 
 

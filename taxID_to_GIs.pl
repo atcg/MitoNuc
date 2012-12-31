@@ -12,7 +12,7 @@ use Env qw(BLASTDB);
 #(the gi number) the hash key, #and the second value of each row (the taxon ID)
 #the hash value
 
-#LET'S TRY TO DO THIS WITH ZGREP AND gi_taxid_nucl.dmp.gz INSTEAD!
+#Let's do this with grep and gi_taxid_nucl.dmp instead
 ###open( my $txIDgi_fh, "<", '/mnt/Data1/blastdb/allnuc_taxa_key.txt' )
 ###  or die "Can't read /mnt/Data1/blastdb/allnuc_taxa_key.txt: $!\n";
 ###
