@@ -6,7 +6,7 @@
 #   This script is the figurative crank that must be turned to perform all the
 #   tasks involved in this project. Usage is:
     
-#   perl ~/Desktop/src/MitoNuc/crank.pl -taxid 8948
+#   perl ~/Desktop/src/MitoNuc/crank.pl --taxid 8948
 #
 #   where 8948 is an example taxID to be used for the higher taxonomic category
 #   of interest (8948 is Falconiformes).
@@ -40,10 +40,29 @@ print "Higher Level Taxon ID: $taxID.\n";
 
 #1.
 print "Creating GI lists for every family found within taxon ID $taxID.\n";
-system("perl taxID_to_GIs.pl -taxID $taxID");
+system("perl taxID_to_GIs.pl --taxID $taxID");
 
 #2.
 print "Subsetting blast databases with GIs from each family.\n";
-#system("blastdbcmd ...");
+opendir(DIRECTORY, "gi_lists");
+my @giFiles = readdir(DIRECTORY);
+closedir(DIRECTORY);
+foreach my $giTextFile (@giFiles) {
+  if ($giTextFile =~ '(.+)\.txt') {
+    my $newDBname = $1 . 'db';
+    system("blastdb_aliastool -db nt -dbtype nucl -gilist gi_lists/$giTextFile -out /Volumes/Spinster/data/blastdb/$newDBname")   
+  }
+}
+
+#3. Run clustering analysis on the individual family blast databases
+#system("get_your_clustering_on.pl -dir gi_lists");
+
+
+
+
+
+
+
+
 
 
