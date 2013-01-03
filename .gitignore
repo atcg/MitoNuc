@@ -14,5 +14,6 @@ MYMETA.yml
 nytprof.out
 pm_to_blib
 gi_lists/
+data/
 
 .DS_Store
