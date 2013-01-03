@@ -1,0 +1,10 @@
+1. Taxa include species and subspecies according to NCBI taxonomy
+2. Looking at all vertebrate families as subsets
+3. Does it make sense to do this analysis using NCBI taxonomy to subset?
+4. How do we decide which topology is correct for a family? (need to know for comparative purposes to
+    show whether nuclear or mitochondrial performed better)
+    a. node resolution?
+    b. external phylogeny information? (literature search/outside database)
+    c. the size of the project increases massively with each non-automated step
+5. How do we deal with adding both mitochondrial and nuclear data together? Do we want to do that?
+6. 

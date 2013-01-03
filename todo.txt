@@ -1,6 +1,0 @@
-NCBI Genome workbench
-Change updateblastdb.sh to include updating the taxonomy used in the scripts
-Change updateblastdb.sh to also create the database aliases that I want
-Join O|B|F (http://www.open-bio.org/wiki/Open_Bioinformatics_Foundation:Membership_application)
-Add protein sequence searching to taxID_to_GIs.pl
-
