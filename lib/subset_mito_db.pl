@@ -30,10 +30,11 @@ for (my $retstart = 0; $retstart < $count; $retstart += $retmax) {
     $efetch_url .= "&retmax=$retmax&rettype=seqid&retmode=text";
     my $efetch_out = get($efetch_url);
     print $MITOGIPULL "$efetch_out";
-    print "$retstart GIs of $count total processed.\n"
+    if ($retstart % 10000 == 0){
+        print "$retstart GIs of $count total processed.\n"
+    }
 }
 close $MITOGIPULL;
-        
 
 #Parse the resulting file to get just the GI numbers of the accessions, one on each line
 open(my $MITOSEQIDS, "<", "data/mitoEUTILpull.txt") || die "Can't open file: $!\n";
@@ -41,7 +42,7 @@ open(my $MITOGIOUT, ">", "data/mitoGIs.txt") || die "Can't open file: $!\n";
 
 while(my $line = <$MITOSEQIDS>){
     if ($line =~ /Seq-id\s::=\sgi\s(\d+)/) {
-        print "$1\n";
+        print $MITOGIOUT "$1\n";
     }
 }
 
@@ -49,6 +50,11 @@ close $MITOSEQIDS;
 close $MITOGIOUT;
 
 unlink "data/mitoEUTILpull.txt"; #deletes temporary file
+
+
+#Create the actual vertmito blast database
+system('blastdb_aliastool -db nt -dbtype nucl -gilist data/mitoGIs.txt -out /Volumes/Spinster/data/blastdb/vertMito -title vertMito') #Mac testing version
+#system('blastdb_aliastool -db allnuc -dbtype nucl -gilist data/mitoGIs.txt -out /Volumes/Spinster/data/blastdb/vertMito -title vertMito') #Linux production version
 
 
 
