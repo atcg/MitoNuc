@@ -16,20 +16,24 @@
 #   These tasks include:
 #       1. Download blast databases and master GI list file
 #           (updateblastdb.sh)
-#       2. Subset the mitochondrial GIs from the full GI list in step 2
+#       2. Subset the mitochondrial GIs from the full GI list in step 2, and
+#           create a database of just the mitochondrial stuff.
 #           (subset_mito_gis.pl)
 #       3. Creating lists of GI numbers for all members of each family within
 #           the higher-level taxonomic category (there are 3 families within
 #           falconiformes, for instance). This is implemented in taxID_to_GIs.pl
-#       4. Creating subsets of blast databases which include only the GI numbers
-#           for each family in step one. Each family gets two blast databases,
-#           one for protein sequences and one for nucleotide sequences. This is
-#           implemented in subset_blastdbs.pl
-#       5. Run clustering analysis on the individual family blast databases. This
+#       4. Subsetting the full GI lists for nuclear and mitochondrial GIs
+#           (remove_mito_gis_from_gi_lists.pl)
+#       5. Creating subsets of blast databases which include only the GI numbers
+#           for each family in step one. Each family gets four blast databases,
+#           two for protein sequences (mitochondrial and nuclear) and two for
+#           nucleotide sequences (mitochondrial and nuclear). This is implemented
+#           in subset_blastdbs.pl
+#       6. Run clustering analysis on the individual family blast databases. This
 #           will be implemented in get_your_clustering_on.pl
-#       6. Format data matrices for analysis
-#       7. Run phylogenetic analyses on formatted data.
-#       8. Quantify results
+#       7. Format data matrices for analysis
+#       8. Run phylogenetic analyses on formatted data.
+#       9. Quantify results
 
 use strict;
 use warnings;
@@ -43,31 +47,27 @@ if ($taxID == 8948) {
 
 print "Higher Level Taxon ID: $taxID.\n";
 
-#1.
-print "Updating blast databases. This will take a while...\n";
-system("updateblastdb");
+##1.
+#print "Updating blast databases. This will take a while...\n";
+#system("updateblastdb"); #Downloads a bunch of databases and creates allNuc and allProt. 24 HOURS?
 
 #2.
-print "Downloading list of GI numbers for all vertebrate mitochondrial records.\n";
-system("perl lib/subset_mito_gis.pl");
+print "Creating a full mitochondrial blast database called vertMito.\n";
+system("perl lib/subset_mito_db.pl"); #Also creates a list of all vertebrate mitochondrial GIs (data/mitoGIs.txt)--FEW HOURS
 
 #3.
-print "Creating GI lists for every family found within taxon ID $taxID.\n";
-system("perl lib/taxID_to_GIs.pl --taxID $taxID");
+print "Creating full (includes nuclear and mitochondrial) GI lists for every family found within taxon ID $taxID.\n";
+system("perl lib/taxID_to_GIs.pl --taxID $taxID"); #8 HOURS?
 
-#4.
-print "Subsetting blast databases with GIs from each family.\n";
-opendir(DIRECTORY, "gi_lists");
-my @giFiles = readdir(DIRECTORY);
-closedir(DIRECTORY);
-foreach my $giTextFile (@giFiles) {
-  if ($giTextFile =~ '(.+)\.txt') {
-    my $newDBname = $1 . 'db';
-    system("blastdb_aliastool -db nt -dbtype nucl -gilist gi_lists/$giTextFile -out /Volumes/Spinster/data/blastdb/$newDBname")   
-  }
-}
+#4
+print "Separating into distinct lists mitochondrial and nuclear GIs for each family.\n";
+system("perl lib/remove_mito_gis_from_gi_lists.pl"); #independent of input $taxID, just loops through all files in the gi_lists directory. FAST
 
-#5. Run clustering analysis on the individual family blast databases
+#5.
+print "***Subsetting blast databases with GIs from each family.***\n";
+system("perl lib/subset_blastdbs.pl"); #independent of input $taxID, just loops through all files in the gi_lists directory. FAST
+
+#6. Run clustering analysis on the individual family blast databases
 #system("get_your_clustering_on.pl -dir gi_lists");
 
 

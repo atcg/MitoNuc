@@ -3,7 +3,7 @@
 #updateblastdb (shell script)
 #By Evan McCartney-Melstad
 #evanmelstad@ucla.edu
-#10/20.2012
+#10.20.2012
 
 #This script downloads/updates the following NCBI Blast Databases:
 #   nr
@@ -70,6 +70,8 @@ gunzip -f mito.nt.gz | tee --append $LOGFILE
 makeblastdb -dbtype nucl -in mito.nt -input_type fasta -title "mitoNT" -parse_seqids -out mitoNT | tee --append $LOGFILE
 makeblastdb -dbtype prot -in mito.aa -input_type fasta -title "mitoAA" -parse_seqids -out mitoAA | tee --append $LOGFILE
 
+
+#Nuclear Data:
 #run the perl update script from NCBI to download the raw blastdb files
 perl update_blastdb.pl nr nt other_genomic refseq_genomic refseq_protein refseqgene taxdb wgs human_genomic human_genomic_transcript refseq_rna est est_human est_mouse est_others htgs sts gss tsa_nt cdd_delta --decompress 2>&1 | tee --append $LOGFILE
 
@@ -77,20 +79,14 @@ perl update_blastdb.pl nr nt other_genomic refseq_genomic refseq_protein refseqg
 RETVAL=$?
 [ $RETVAL -eq 0 ] && echo 'update_blastdb.pl executed successfully.' 2>&1 | tee --append $LOGFILE
 [ $RETVAL -eq 1 ] && echo 'update_blastdb.pl executed successfully.' 2>&1 | tee --append $LOGFILE
-[ $RETVAL -eq 2 ] && echo 'Error. update_blastdb.pl not executed successfully.' 2>&1 | tee --append $LOGFILE
+[ $RETVAL -eq 2 ] && echo 'Error. update_blastdb.pl did not execute successfully!' 2>&1 | tee --append $LOGFILE
 
 #Make database aliases
 blastdb_aliastool -dblist "nt human_genomic refseq_genomic other_genomic refseqgene wgs refseq_rna" -dbtype nucl -out allNuc -title allNuc | tee --append $LOGFILE
 blastdb_aliastool -dblist "nr refseq_protein" -dbtype prot -out allProt -title allProt | tee --append $LOGFILE
 
-##create one super-giant file that has in the first column GI#, and second row taxon ID
-##ACTUALLY hold off on this, try to use gi_taxid_nucl.dmp and gi_taxid_prot.dmp instead
-#blastdbcmd -db allNuc -dbtype nucl -entry all -out allnuc_taxa_key.txt -outfmt "%T %g" | tee --append $LOGFILE
-#blastdbcmd -db allProt -dbtype prot -entry all -out allprot_taxa_key.txt -outfmt "%T %g" | tee --append $LOGFILE
-#Good code below:
-#zgrep '[[:space:]]7897$' blast/gi_taxid_nucl.dmp.gz | awk '{print $1}' > coelagi1.txt
 
-#Download taxonomy data from NCBI
+#Download gi lists for nucleotide and protein sequences
 wget -N ftp://ftp.ncbi.nih.gov/pub/taxonomy/gi_taxid_nucl.dmp.gz | tee --append $LOGFILE
 wget -N ftp://ftp.ncbi.nih.gov/pub/taxonomy/gi_taxid_prot.dmp.gz | tee --append $LOGFILE
 
@@ -98,10 +94,12 @@ wget -N ftp://ftp.ncbi.nih.gov/pub/taxonomy/gi_taxid_prot.dmp.gz | tee --append 
 gzip -d gi_taxid_nucl.dmp.gz | tee --append $LOGFILE
 gzip -d gi_taxid_prot.dmp.gz | tee --append $LOGFILE
 
+
+#Download taxonomy data from NCBI
 wget -N ftp://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz | tee --append $LOGFILE
 wget -N ftp://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz.md5 | tee --append $LOGFILE
-perl checkmd5.pl --file2hash taxdump.tar.gz --md5file taxdump.tar.gz.md5 | tee --append $LOGFILE
 
+perl checkmd5.pl --file2hash taxdump.tar.gz --md5file taxdump.tar.gz.md5 | tee --append $LOGFILE
 if [ $? == 0 ];
 then
     echo "taxdump.tar.gz downloaded successfully (computed checksum matches NCBI checksum)." | tee --append $LOGFILE

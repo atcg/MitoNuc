@@ -19,7 +19,7 @@ my $key = $1 if ($output =~ /<QueryKey>(\d+)<\/QueryKey>/);
 my $count = $1 if ($output =~ /<Count>(\d+)<\/Count>/);
 
 
-#open output file for writing
+#open output file for writing (temporary file)
 open(my $MITOGIPULL, ">", "data/mitoEUTILpull.txt") || die "Can't open file: $!\n";
         
 #retrieve data in batches of 500
@@ -54,7 +54,10 @@ unlink "data/mitoEUTILpull.txt"; #deletes temporary file
 
 #Create the actual vertmito blast database
 system('blastdb_aliastool -db nt -dbtype nucl -gilist data/mitoGIs.txt -out /Volumes/Spinster/data/blastdb/vertMito -title vertMito') #Mac testing version
-#system('blastdb_aliastool -db allnuc -dbtype nucl -gilist data/mitoGIs.txt -out /Volumes/Spinster/data/blastdb/vertMito -title vertMito') #Linux production version
+#system('blastdb_aliastool -db allNuc -dbtype nucl -gilist data/mitoGIs.txt -out /Volumes/Spinster/data/blastdb/vertMito -title vertMito') #Linux production version
+
+#Create a database of ONLY the nuclear accessessions (don't include the mitochondrial GIs)
 
 
+#TODO: Add support for protein databases
 

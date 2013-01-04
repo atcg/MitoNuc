@@ -13,29 +13,8 @@ unless (defined $taxID) {
     print "Higher level taxon ID not supplied. Must use --taxid argument in call.";
 }
 
-#First we create the master hash that will be used for taxID lookup and sorting
-#There needs to be the ginormous gi-taxid columned files in the /mnt/Data1/blastdb
-#directory. These should be called nuc_gi_taxa_key.txt and prot_gi_taxa_key.txt
-#We create a ginormous hash first that puts makes the first value of each row
-#(the gi number) the hash key, #and the second value of each row (the taxon ID)
-#the hash value
 
-#Let's do this with grep and gi_taxid_nucl.dmp instead
-###open( my $txIDgi_fh, "<", '/mnt/Data1/blastdb/allnuc_taxa_key.txt' )
-###  or die "Can't read /mnt/Data1/blastdb/allnuc_taxa_key.txt: $!\n";
-###
-###my %taxgi;
-###while ( defined( my $txgi_row = <$txIDgi_fh> ) ) {
-###    my $row = $txgi_row =~ /(\d+)\s(\d+)/;
-###    my $taxonID = $1;
-###    my $gi = $2;
-###    #push the gi to the end of the hash value for the corresponding key (taxonID)
-###    push (@{$taxgi{$taxonID}}, $gi);
-###}
-###print "Ginormous (94 million key-value pairs?) taxID - GI hash created!\n";
-###close $txIDgi_fh;
-
-#Now we create a hash of all the taxon IDs of all vertebrate families
+#We create a hash of all the taxon IDs of all vertebrate families
 #This should be an array of length 971, with all integer values. 7742 is the
 #taxonID for vertebrates. 8948 is for Falconiformes (fewer taxa for testing)
 my @vertFamilies = getChildTaxa($taxID, 'family');
@@ -49,8 +28,7 @@ print "Array of all ", scalar(@vertFamilies), " families created!\n";
 my %vertFamilySpecies;
 my $counter = 0;
 foreach my $loopFamily (@vertFamilies) {
-    push(@{$vertFamilySpecies{$loopFamily}}, getChildTaxa($loopFamily, 'species',
-                                                          'subspecies'));
+    push(@{$vertFamilySpecies{$loopFamily}}, getChildTaxa($loopFamily, 'species', 'subspecies'));
     $counter ++;
     print "$counter of ", scalar(@vertFamilies), " families processed...\n";
 }
