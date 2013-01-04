@@ -3,8 +3,19 @@
 use strict;
 use warnings;
 use LWP::Simple;
+use Getopt::Long;
 
-my $query = 'Vertebrata[Organism:exp] AND gene_in_mitochondrion[PROP]';
+
+my $taxID;
+GetOptions("taxid=i" => \$taxID);
+if ($taxID eq '') {
+    print "must supply taxon ID to subset_mito_db.pl\n";
+}
+
+my $queryOrg = "txid" . $taxID . "[Organism:exp]";
+print "Higher Level Taxon ID for creating mito GI subset: $taxID.\n";
+
+my $query = "$queryOrg AND gene_in_mitochondrion[PROP]";
 
 #assemble the esearch URL
 my $base = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/';
@@ -38,7 +49,7 @@ close $MITOGIPULL;
 
 #Parse the resulting file to get just the GI numbers of the accessions, one on each line
 open(my $MITOSEQIDS, "<", "data/mitoEUTILpull.txt") || die "Can't open file: $!\n";
-open(my $MITOGIOUT, ">", "data/mitoGIs.txt") || die "Can't open file: $!\n";
+open(my $MITOGIOUT, ">", "data/mitoGIs_$taxID.txt") || die "Can't open file: $!\n";
 
 while(my $line = <$MITOSEQIDS>){
     if ($line =~ /Seq-id\s::=\sgi\s(\d+)/) {
@@ -53,8 +64,8 @@ unlink "data/mitoEUTILpull.txt"; #deletes temporary file
 
 
 #Create the actual vertmito blast database
-system('blastdb_aliastool -db nt -dbtype nucl -gilist data/mitoGIs.txt -out /Volumes/Spinster/data/blastdb/vertMito -title vertMito') #Mac testing version
-#system('blastdb_aliastool -db allNuc -dbtype nucl -gilist data/mitoGIs.txt -out /Volumes/Spinster/data/blastdb/vertMito -title vertMito') #Linux production version
+system("blastdb_aliastool -db nt -dbtype nucl -gilist data/mitoGIs_$taxID.txt -out /Volumes/Spinster/data/blastdb/vertMito -title vertMito") #Mac testing version
+#system('blastdb_aliastool -db allNuc -dbtype nucl -gilist data/mitoGIs_$taxID.txt -out /Volumes/Spinster/data/blastdb/vertMito -title vertMito') #Linux production version
 
 #Create a database of ONLY the nuclear accessessions (don't include the mitochondrial GIs)
 

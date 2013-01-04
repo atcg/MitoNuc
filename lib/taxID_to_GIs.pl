@@ -7,17 +7,17 @@ use Env qw(BLASTDB); #This creates the variable $BLASTDB in Perl, which is equal
                      #to the system environmental variable $BLASTDB
 use Getopt::Long;
 
-my $taxID;
-GetOptions ("taxid=i" => \$taxID);
-unless (defined $taxID) {
-    print "Higher level taxon ID not supplied. Must use --taxid argument in call.";
+my $taxIDz;
+GetOptions ("taxid=i" => \$taxIDz);
+unless (defined $taxIDz) {
+    print "Higher level taxon ID not supplied. Must use --taxid argument in call.\n";
 }
-
+print "taxID_to_GIs.pl. Supplied Taxon ID: $taxIDz. blastDB: $BLASTDB\n";
 
 #We create a hash of all the taxon IDs of all vertebrate families
 #This should be an array of length 971, with all integer values. 7742 is the
 #taxonID for vertebrates. 8948 is for Falconiformes (fewer taxa for testing)
-my @vertFamilies = getChildTaxa($taxID, 'family');
+my @vertFamilies = getChildTaxa($taxIDz, 'family');
 print "Array of all ", scalar(@vertFamilies), " families created!\n";
 
 #Now, for each family, we want to create an array of taxonIDs that correspond to
@@ -78,13 +78,16 @@ sub getChildTaxa
     if ((scalar(@_) == 2 or scalar(@_) == 3) && $_[0] =~ /^\d+/)
     {    
         my $dbdir = $BLASTDB; #this is a dir containing nodes.dmp and names.dmp from ncbi
+        unless(-d "data/taxonomy") {
+            mkdir "data/taxonomy" or die "can't mkdir gi_lists in data directory: $!";
+        }
         my $db = Bio::DB::Taxonomy->new(-source => 'flatfile',
                                         -nodesfile => "$dbdir/nodes.dmp",
                                         -namesfile => "$dbdir/names.dmp",
+                                        -directory => "data/taxonomy",
                                         );
         my $taxa = $db->get_taxon(-taxonid => $_[0]);
-        my @childNodes = $db->get_all_Descendents($taxa);
-        
+        my @childNodes = $db -> get_all_Descendents($taxa);
         #Extract the elements of @childNodes that are of species rank into new array
         my @childTaxaOfInterest;
         foreach my $subnode (@childNodes)

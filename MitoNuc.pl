@@ -35,6 +35,10 @@
 #       8. Run phylogenetic analyses on formatted data.
 #       9. Quantify results
 
+
+#To change this to work with the Rover:
+#  1. switch the nt to allNuc in the system calls to blast+ applications
+
 use strict;
 use warnings;
 use Getopt::Long;
@@ -52,16 +56,20 @@ print "Higher Level Taxon ID: $taxID.\n";
 #system("updateblastdb"); #Downloads a bunch of databases and creates allNuc and allProt. 24 HOURS?
 
 #2.
-print "Creating a full mitochondrial blast database called vertMito.\n";
-system("perl lib/subset_mito_db.pl"); #Also creates a list of all vertebrate mitochondrial GIs (data/mitoGIs.txt)--FEW HOURS
+#print "Creating a full mitochondrial blast database called vertMito.\n";
+#system("perl lib/subset_mito_db.pl"); #Also creates a list of all vertebrate mitochondrial GIs (data/mitoGIs.txt)--FEW HOURS
 
 #3.
 print "Creating full (includes nuclear and mitochondrial) GI lists for every family found within taxon ID $taxID.\n";
 system("perl lib/taxID_to_GIs.pl --taxID $taxID"); #8 HOURS?
 
+#4.
+print "Creating master mitochondrial GI list for vertebrates\n";
+system("perl lib/subset_mito_db.pl --taxID $taxID"); 
+
 #4
 print "Separating into distinct lists mitochondrial and nuclear GIs for each family.\n";
-system("perl lib/remove_mito_gis_from_gi_lists.pl"); #independent of input $taxID, just loops through all files in the gi_lists directory. FAST
+system("perl lib/remove_mito_gis_from_gi_lists.pl --taxID $taxID");
 
 #5.
 print "***Subsetting blast databases with GIs from each family.***\n";
