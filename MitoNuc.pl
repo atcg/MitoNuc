@@ -29,6 +29,8 @@
 #           two for protein sequences (mitochondrial and nuclear) and two for
 #           nucleotide sequences (mitochondrial and nuclear). This is implemented
 #           in subset_blastdbs.pl
+#       6. Create FASTA flatfiles for all the databases I just made. This is
+#           needed to run CD-Hit
 #       6. Run clustering analysis on the individual family blast databases. This
 #           will be implemented in get_your_clustering_on.pl
 #       7. Format data matrices for analysis
@@ -72,8 +74,9 @@ print "Separating into distinct lists mitochondrial and nuclear GIs for each fam
 system("perl lib/remove_mito_gis_from_gi_lists.pl --taxID $taxID");
 
 #5.
-print "***Subsetting blast databases with GIs from each family.***\n";
+print "***Subsetting blast databases with GIs from each family and creating FASTA files from blast databases to use with cd-hit..***\n";
 system("perl lib/subset_blastdbs.pl"); #independent of input $taxID, just loops through all files in the gi_lists directory. FAST
+
 
 #6. Run clustering analysis on the individual family blast databases
 #system("get_your_clustering_on.pl -dir gi_lists");
