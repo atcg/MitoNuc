@@ -5,6 +5,10 @@ use warnings;
 use LWP::Simple;
 use Getopt::Long;
 
+unless(-d "data/db") {
+    mkdir "data/db" or die "can't mkdir data: $!";
+}
+
 
 my $taxID;
 GetOptions("taxid=i" => \$taxID);
@@ -64,7 +68,7 @@ unlink "data/mitoEUTILpull.txt"; #deletes temporary file
 
 
 #Create the actual vertmito blast database
-system("blastdb_aliastool -db nt -dbtype nucl -gilist data/mitoGIs_$taxID.txt -out /Volumes/Spinster/data/blastdb/vertMito -title vertMito") #Mac testing version
+system("blastdb_aliastool -db nt -dbtype nucl -gilist data/mitoGIs_$taxID.txt -out data/db/AllMitoGIs_$taxID -title AllMitoGIs_$taxID") #Mac testing version
 #system('blastdb_aliastool -db allNuc -dbtype nucl -gilist data/mitoGIs_$taxID.txt -out /Volumes/Spinster/data/blastdb/vertMito -title vertMito') #Linux production version
 
 #Create a database of ONLY the nuclear accessessions (don't include the mitochondrial GIs)

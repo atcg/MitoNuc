@@ -53,6 +53,11 @@ if ($taxID == 8948) {
 
 print "Higher Level Taxon ID: $taxID.\n";
 
+unless(-d "data") {
+    mkdir "data" or die "can't mkdir data: $!";
+}
+
+
 ##1.
 #print "Updating blast databases. This will take a while...\n";
 #system("updateblastdb"); #Downloads a bunch of databases and creates allNuc and allProt. 24 HOURS?
