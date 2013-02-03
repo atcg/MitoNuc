@@ -79,7 +79,7 @@ sub getChildTaxa
     {    
         my $dbdir = $BLASTDB; #this is a dir containing nodes.dmp and names.dmp from ncbi
         unless(-d "data/taxonomy") {
-            mkdir "data/taxonomy" or die "can't mkdir gi_lists in data directory: $!";
+            mkdir "data/taxonomy" or die "can't mkdir taxonomy in data directory: $!";
         }
         my $db = Bio::DB::Taxonomy->new(-source => 'flatfile',
                                         -nodesfile => "$dbdir/nodes.dmp",

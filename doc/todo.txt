@@ -10,3 +10,11 @@ After creating the family-specific blast database:
         a) use those gis to create two databases:
             i) mitochondrial
             ii) excluding mitochondrial from full database
+            
+            
+The clustering is not working as anticipated. Instead of clustering different species into gene groups,
+it is clustering by species. This is because, for the mitochondrial groupings that I have tested, the
+FASTA databases I am clustering include full mitochondrial genomes. Thus cd-hit-est is clustering the
+database against the longest sequence, which is the full mt genome. So it is picking all the sequences
+that align to the full mitochondrial genome above xx% sequence identity. This is obviously picking up
+all the mitochondrial genes for a species instead of what I want it to do.
