@@ -10,7 +10,11 @@ After creating the family-specific blast database:
         a) use those gis to create two databases:
             i) mitochondrial
             ii) excluding mitochondrial from full database
-            
+
+Must do database operations against nt and (at least) refseq_genomic. For example, of the 22 records
+for taxon group 8948 full mitochondrial genomes, only 12 are found in the nt database, and 10 are
+refseqs, so are (I'm assuming) in the refseq_genomic blast database.
+
             
 The clustering is not working as anticipated. Instead of clustering different species into gene groups,
 it is clustering by species. This is because, for the mitochondrial groupings that I have tested, the

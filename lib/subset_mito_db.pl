@@ -141,7 +141,7 @@ unlink "data/mitoEUTILpull_fullmtgenome.txt"; #deletes temporary file
 
 
 #Create the actual vertmito blast database
-system("blastdb_aliastool -db nt -dbtype nucl -gilist data/mitoGIs_fullmtgenomes_$taxID.txt -out data/db/fullmtgenomes_$taxID -title fullmtgenomes_$taxID") #Mac testing version
+system("blastdb_aliastool -db nt -dbtype nucl -gilist data/mitoGIs_fullmtgenomes_$taxID.txt -out fullmtgenomes_$taxID -title fullmtgenomes_$taxID") #Mac testing version
 #system('blastdb_aliastool -db allNuc -dbtype nucl -gilist data/mitoGIs_$taxID.txt -out /Volumes/Spinster/data/blastdb/vertMito -title vertMito') #Linux production version
 
 
