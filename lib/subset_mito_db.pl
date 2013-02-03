@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use LWP::Simple;
 use Getopt::Long;
+use File::Copy;
 
 unless(-d "data") {
     mkdir "data" or die "can't mkdir data: $!";
@@ -73,10 +74,12 @@ unlink "data/mitoEUTILpull.txt"; #deletes temporary file
 
 
 #Create the actual vertmito blast database
-system("blastdb_aliastool -db nt -dbtype nucl -gilist data/mitoGIs_$taxID.txt -out data/db/AllMitoGIs_$taxID -title AllMitoGIs_$taxID"); #Mac testing version
+system("blastdb_aliastool -db nt -dbtype nucl -gilist data/mitoGIs_$taxID.txt -out Mitos_exceptGenomes_$taxID -title Mitos_exceptGenomes_$taxID"); #Mac testing version
 #system('blastdb_aliastool -db allNuc -dbtype nucl -gilist data/mitoGIs_$taxID.txt -out /Volumes/Spinster/data/blastdb/vertMito -title vertMito'); #Linux production version
-
-
+copy("Mitos_exceptGenomes_$taxID.n.gil", "data/db/Mitos_exceptGenomes_$taxID.n.gil") or die "File cannot be copied: $!\n";
+copy("Mitos_exceptGenomes_$taxID.nal", "data/db/Mitos_exceptGenomes_$taxID.nal") or die "File cannot be copied: $!\n";
+unlink "Mitos_exceptGenomes_$taxID.n.gil";
+unlink "Mitos_exceptGenomes_$taxID.nal";
 
 
 
@@ -141,10 +144,11 @@ unlink "data/mitoEUTILpull_fullmtgenome.txt"; #deletes temporary file
 
 
 #Create the actual vertmito blast database
-system("blastdb_aliastool -db nt -dbtype nucl -gilist data/mitoGIs_fullmtgenomes_$taxID.txt -out fullmtgenomes_$taxID -title fullmtgenomes_$taxID") #Mac testing version
+system("blastdb_aliastool -db nt -dbtype nucl -gilist data/mitoGIs_fullmtgenomes_$taxID.txt -out fullmtgenomes_$taxID -title fullmtgenomes_$taxID"); #Mac testing version
 #system('blastdb_aliastool -db allNuc -dbtype nucl -gilist data/mitoGIs_$taxID.txt -out /Volumes/Spinster/data/blastdb/vertMito -title vertMito') #Linux production version
-
-
-
+copy("fullmtgenomes_$taxID.n.gil", "data/db/fullmtgenomes_$taxID.n.gil") or die "File cannot be copied: $!\n";
+copy("fullmtgenomes_$taxID.nal", "data/db/fullmtgenomes_$taxID.nal") or die "File cannot be copied: $!\n";
+unlink "fullmtgenomes_$taxID.n.gil";
+unlink "fullmtgenomes_$taxID.nal";
 
 
