@@ -12,7 +12,7 @@ GetOptions ("taxid=i" => \$taxIDz);
 unless (defined $taxIDz) {
     print "Higher level taxon ID not supplied. Must use --taxid argument in call.\n";
 }
-print "taxID_to_GIs.pl. Supplied Taxon ID: $taxIDz. blastDB: $BLASTDB\n";
+print "***taxID_to_GIs.pl. Supplied Taxon ID: $taxIDz. blastDB: $BLASTDB***\n";
 
 #We create a hash of all the taxon IDs of all vertebrate families
 #This should be an array of length 971, with all integer values. 7742 is the
