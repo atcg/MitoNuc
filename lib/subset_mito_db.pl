@@ -5,8 +5,12 @@ use warnings;
 use LWP::Simple;
 use Getopt::Long;
 
+unless(-d "data") {
+    mkdir "data" or die "can't mkdir data: $!";
+}
+
 unless(-d "data/db") {
-    mkdir "data/db" or die "can't mkdir data: $!";
+    mkdir "data/db" or die "can't mkdir data/db: $!";
 }
 
 
@@ -19,7 +23,8 @@ if ($taxID eq '') {
 my $queryOrg = "txid" . $taxID . "[Organism:exp]";
 print "Higher Level Taxon ID for creating mito GI subset: $taxID.\n";
 
-my $query = "$queryOrg AND gene_in_mitochondrion[PROP]";
+my $query = "$queryOrg NOT \"complete genome\" AND gene_in_mitochondrion[PROP]";
+my $query2 = "$queryOrg AND \"complete genome\" AND gene_in_mitochondrion[PROP]";
 
 #assemble the esearch URL
 my $base = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/';
@@ -68,11 +73,78 @@ unlink "data/mitoEUTILpull.txt"; #deletes temporary file
 
 
 #Create the actual vertmito blast database
-system("blastdb_aliastool -db nt -dbtype nucl -gilist data/mitoGIs_$taxID.txt -out data/db/AllMitoGIs_$taxID -title AllMitoGIs_$taxID") #Mac testing version
+system("blastdb_aliastool -db nt -dbtype nucl -gilist data/mitoGIs_$taxID.txt -out data/db/AllMitoGIs_$taxID -title AllMitoGIs_$taxID"); #Mac testing version
+#system('blastdb_aliastool -db allNuc -dbtype nucl -gilist data/mitoGIs_$taxID.txt -out /Volumes/Spinster/data/blastdb/vertMito -title vertMito'); #Linux production version
+
+
+
+
+
+
+#*******************************************************************************#
+#*******************************************************************************#
+#*******************************************************************************#
+#*******************************************************************************#
+#*******************************************************************************#
+#*******************************************************************************#
+#*******************************************************************************#
+#*******************************************************************************#
+#*******************************************************************************#
+
+
+
+
+
+#Below is the same as above, except for dealing with mitochondrial full genome sequences
+my $url2 = $base . "esearch.fcgi?db=nucleotide&term=$query2&usehistory=y";
+
+#post the esearch URL
+my $output2 = get($url2);
+
+#parse WebEnv, QueryKey and Count (# records retrieved)
+my $web2 = $1 if ($output2 =~ /<WebEnv>(\S+)<\/WebEnv>/);
+my $key2 = $1 if ($output2 =~ /<QueryKey>(\d+)<\/QueryKey>/);
+my $count2 = $1 if ($output2 =~ /<Count>(\d+)<\/Count>/);
+
+
+#open output file for writing (temporary file)
+open(my $MITOGIPULL2, ">", "data/mitoEUTILpull_fullmtgenome.txt") || die "Can't open file: $!\n";
+        
+#retrieve data in batches of 500
+my $retmax2 = 500;
+for (my $retstart2 = 0; $retstart2 < $count2; $retstart2 += $retmax2) {
+    my $efetch_url2 = $base ."efetch.fcgi?db=nucleotide&WebEnv=$web2";
+    $efetch_url2 .= "&query_key=$key2&retstart=$retstart2";
+    $efetch_url2 .= "&retmax=$retmax2&rettype=seqid&retmode=text";
+    my $efetch_out2 = get($efetch_url2);
+    print $MITOGIPULL2 "$efetch_out2";
+    if ($retstart2 % 10000 == 0){
+        print "$retstart2 GIs of $count total processed.\n"
+    }
+}
+close $MITOGIPULL2;
+
+#Parse the resulting file to get just the GI numbers of the accessions, one on each line
+open(my $MITOSEQIDS2, "<", "data/mitoEUTILpull_fullmtgenome.txt") || die "Can't open file: $!\n";
+open(my $MITOGIOUT2, ">", "data/mitoGIs_fullmtgenomes_$taxID.txt") || die "Can't open file: $!\n";
+
+while(my $line = <$MITOSEQIDS2>){
+    if ($line =~ /Seq-id\s::=\sgi\s(\d+)/) {
+        print $MITOGIOUT2 "$1\n";
+    }
+}
+
+close $MITOSEQIDS2;
+close $MITOGIOUT2;
+
+unlink "data/mitoEUTILpull_fullmtgenome.txt"; #deletes temporary file
+
+
+#Create the actual vertmito blast database
+system("blastdb_aliastool -db nt -dbtype nucl -gilist data/mitoGIs_fullmtgenomes_$taxID.txt -out data/db/fullmtgenomes_$taxID -title fullmtgenomes_$taxID") #Mac testing version
 #system('blastdb_aliastool -db allNuc -dbtype nucl -gilist data/mitoGIs_$taxID.txt -out /Volumes/Spinster/data/blastdb/vertMito -title vertMito') #Linux production version
 
-#Create a database of ONLY the nuclear accessessions (don't include the mitochondrial GIs)
 
 
-#TODO: Add support for protein databases
+
 

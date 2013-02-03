@@ -78,6 +78,8 @@ system("perl lib/subset_mito_db.pl --taxID $taxID");
 print "Separating into distinct lists mitochondrial and nuclear GIs for each family.\n";
 system("perl lib/remove_mito_gis_from_gi_lists.pl --taxID $taxID");
 
+#Break up mitochondrial genomes into individual gene records and add to FASTA file . Then remove all long sequences. 
+
 #5.
 print "***Subsetting blast databases with GIs from each family and creating FASTA files from blast databases to use with cd-hit..***\n";
 system("perl lib/subset_blastdbs.pl"); #independent of input $taxID, just loops through all files in the gi_lists directory. FAST
