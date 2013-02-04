@@ -1,5 +1,20 @@
 #!/usr/bin/perl
 
+#This script does a few things (uses example taxon ID of 8948 below):
+#1. queries entrez nucleotide database for: txID8948[Organism:exp] NOT "complete genome" AND gene_in_mitochondrion[PROP]";
+#2. Pulls all the results from query in #1 500 at a time (which is the max) and writes them to a temporary file
+#3. Uses a regex to extract the GI number from the temporary file in #2, and writes the GIs to a file called data/mitoGIs_8948.txt
+#4. Deletes the temporary file from #2 above
+#5. Creates a blast database in the current directory called "Mitos_exceptGenomes_8948", then moves it to data/db/Mitos_exceptGenomes_8948
+#   a. This database is a subset of the nt database (or another, more-inclusive, database), using the GIs from #3 above to subset
+#
+#6. queries entrez nucleotide database for: txID8948[Organism:exp] AND "complete genome" AND gene_in_mitochondrion[PROP]";
+#7. Pulls all the results from query in #6 500 at a time (which is the max) and writes them to a temporary file
+#8. Uses a regex to extract the GI number from the temporary file in #7, and writes the GIs to a file called data/mitoGIs_fullmtgenomes_8948.txt
+#9. Deletes the temporary file from #7 above
+#10. Creates a blast database in the current directory called "fullmtgenomes_8948", then moves it to data/db/Mitos_exceptGenomes_8948
+
+
 use strict;
 use warnings;
 use LWP::Simple;
