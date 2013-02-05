@@ -137,7 +137,7 @@ for (my $retstart2 = 0; $retstart2 < $count2; $retstart2 += $retmax2) {
     my $efetch_out2 = get($efetch_url2);
     print $MITOGIPULL2 "$efetch_out2";
     if ($retstart2 % 10000 == 0){
-        print "$retstart2 GIs of $count total processed.\n"
+        print "$retstart2 GIs of $count2 total processed.\n"
     }
 }
 close $MITOGIPULL2;

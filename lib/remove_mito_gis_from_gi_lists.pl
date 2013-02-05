@@ -1,5 +1,8 @@
 #!/usr/bin/perl
 
+#remove_mito_gis_from_gi_lists.pl
+#Usage: perl remove_mito_gis_from_gi_lists.pl --taxID 8948
+
 use strict;
 use warnings;
 use Getopt::Long;
