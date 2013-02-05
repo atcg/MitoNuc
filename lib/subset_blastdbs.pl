@@ -13,12 +13,16 @@ unless(-d "data/FASTA") {
 
 foreach my $giTextFile (@giFiles) {
   next if $giTextFile eq '.' || $giTextFile eq '..' || $giTextFile eq '.DS_Store'; #for readability on command line while running program
-  if ($giTextFile =~ /(\d+)mito\.txt/) {
-    my $newDBname = $1 . '_mito_db';
+  if ($giTextFile =~ /(\d+)_mito_nogenomes\.txt/) {
+    my $newDBname = $1 . '_mito_nogenomes_db';
     system("blastdb_aliastool -db nt -dbtype nucl -gilist data/gi_lists/$giTextFile -out $newDBname -title $newDBname");
     system("blastdbcmd -db $newDBname -dbtype nucl -entry all -outfmt %f -out data/FASTA/$newDBname.fasta");
+  } elsif ($giTextFile =~ /(\d+)_mito_genomes\.txt/) {
+      my $newDBname = $1 . '_mito_genomes';
+      system("blastdb_aliastool -db nt -dbtype nucl -gilist data/gi_lists/$giTextFile -out $newDBname");
+      system("blastdbcmd -db $newDBname -dbtype nucl -entry all -outfmt %f -out data/FASTA/$newDBname.fasta");
   } elsif ($giTextFile =~ /(\d+)nuc\.txt/) {
-      my $newDBname = $1 . '_nuc_db';
+      my $newDBname = $1 . '_nuc';
       system("blastdb_aliastool -db nt -dbtype nucl -gilist data/gi_lists/$giTextFile -out $newDBname");
       system("blastdbcmd -db $newDBname -dbtype nucl -entry all -outfmt %f -out data/FASTA/$newDBname.fasta");
   } else {
