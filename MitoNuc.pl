@@ -49,7 +49,7 @@ my $taxID;
 GetOptions ("taxid=i" => \$taxID);
 if (!defined $taxID) {
    print "Higher-level taxID not set by user. Using falconiformes (8948) as example.\n";
-   my $taxID = 8948; #default to falconiformes (for testing). Vertebrata is 7742.
+   $taxID = 8948; #default to falconiformes (for testing). Vertebrata is 7742.
 } else {
    print "User-set higher-level taxon ID: $taxID.\n"
 }

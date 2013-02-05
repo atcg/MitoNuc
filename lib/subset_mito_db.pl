@@ -74,7 +74,7 @@ close $MITOGIPULL;
 
 #Parse the resulting file to get just the GI numbers of the accessions, one on each line
 open(my $MITOSEQIDS, "<", "data/mitoEUTILpull.txt") || die "Can't open file: $!\n";
-open(my $MITOGIOUT, ">", "data/mitoGIs_$taxID.txt") || die "Can't open file: $!\n";
+open(my $MITOGIOUT, ">", "data/mitoGIs_nogenomes_$taxID.txt") || die "Can't open file: $!\n";
 
 while(my $line = <$MITOSEQIDS>){
     if ($line =~ /Seq-id\s::=\sgi\s(\d+)/) {
