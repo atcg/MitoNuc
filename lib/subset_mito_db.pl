@@ -112,7 +112,6 @@ unlink "Mitos_exceptGenomes_$taxID.nal";
 
 
 
-
 #Below is the same as above, except for dealing with mitochondrial full genome sequences
 my $url2 = $base . "esearch.fcgi?db=nucleotide&term=$query2&usehistory=y";
 
