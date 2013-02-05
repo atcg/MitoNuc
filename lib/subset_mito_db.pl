@@ -5,14 +5,14 @@
 #2. Pulls all the results from query in #1 500 at a time (which is the max) and writes them to a temporary file
 #3. Uses a regex to extract the GI number from the temporary file in #2, and writes the GIs to a file called data/mitoGIs_8948.txt
 #4. Deletes the temporary file from #2 above
-#5. Creates a blast database in the current directory called "Mitos_exceptGenomes_8948", then moves it to data/db/Mitos_exceptGenomes_8948
-#   a. This database is a subset of the nt database (or another, more-inclusive, database), using the GIs from #3 above to subset
+##SKIP THIS STEP FOR NOW-->5. Creates a blast database in the current directory called "Mitos_exceptGenomes_8948", then moves it to data/db/Mitos_exceptGenomes_8948
+##SKIP THIS STEP FOR NOW-->#   a. This database is a subset of the nt database (or another, more-inclusive, database), using the GIs from #3 above to subset
 #
 #6. queries entrez nucleotide database for: txID8948[Organism:exp] AND "complete genome" AND gene_in_mitochondrion[PROP]";
 #7. Pulls all the results from query in #6 500 at a time (which is the max) and writes them to a temporary file
 #8. Uses a regex to extract the GI number from the temporary file in #7, and writes the GIs to a file called data/mitoGIs_fullmtgenomes_8948.txt
 #9. Deletes the temporary file from #7 above
-#10. Creates a blast database in the current directory called "fullmtgenomes_8948", then moves it to data/db/Mitos_exceptGenomes_8948
+##SKIP THIS STEP FOR NOW-->#10. Creates a blast database in the current directory called "fullmtgenomes_8948", then moves it to data/db/Mitos_exceptGenomes_8948
 
 
 use strict;
@@ -74,7 +74,7 @@ close $MITOGIPULL;
 
 #Parse the resulting file to get just the GI numbers of the accessions, one on each line
 open(my $MITOSEQIDS, "<", "data/mitoEUTILpull.txt") || die "Can't open file: $!\n";
-open(my $MITOGIOUT, ">", "data/mitoGIs_$taxID.txt") || die "Can't open file: $!\n";
+open(my $MITOGIOUT, ">", "data/mitoGIs_nogenomes_$taxID.txt") || die "Can't open file: $!\n";
 
 while(my $line = <$MITOSEQIDS>){
     if ($line =~ /Seq-id\s::=\sgi\s(\d+)/) {
@@ -88,13 +88,13 @@ close $MITOGIOUT;
 unlink "data/mitoEUTILpull.txt"; #deletes temporary file
 
 
-#Create the actual vertmito blast database
-system("blastdb_aliastool -db nt -dbtype nucl -gilist data/mitoGIs_$taxID.txt -out Mitos_exceptGenomes_$taxID -title Mitos_exceptGenomes_$taxID"); #Mac testing version
-#system('blastdb_aliastool -db allNuc -dbtype nucl -gilist data/mitoGIs_$taxID.txt -out /Volumes/Spinster/data/blastdb/vertMito -title vertMito'); #Linux production version
-copy("Mitos_exceptGenomes_$taxID.n.gil", "data/db/Mitos_exceptGenomes_$taxID.n.gil") or die "File cannot be copied: $!\n";
-copy("Mitos_exceptGenomes_$taxID.nal", "data/db/Mitos_exceptGenomes_$taxID.nal") or die "File cannot be copied: $!\n";
-unlink "Mitos_exceptGenomes_$taxID.n.gil";
-unlink "Mitos_exceptGenomes_$taxID.nal";
+##Create the actual vertmito blast database
+#system("blastdb_aliastool -db nt -dbtype nucl -gilist data/mitoGIs_nogenomes_$taxID.txt -out Mitos_exceptGenomes_$taxID -title Mitos_exceptGenomes_$taxID"); #Mac testing version
+##system('blastdb_aliastool -db allNuc -dbtype nucl -gilist data/mitoGIs_$taxID.txt -out /Volumes/Spinster/data/blastdb/vertMito -title vertMito'); #Linux production version
+#copy("Mitos_exceptGenomes_$taxID.n.gil", "data/db/Mitos_exceptGenomes_$taxID.n.gil") or die "File cannot be copied: $!\n";
+#copy("Mitos_exceptGenomes_$taxID.nal", "data/db/Mitos_exceptGenomes_$taxID.nal") or die "File cannot be copied: $!\n";
+#unlink "Mitos_exceptGenomes_$taxID.n.gil";
+#unlink "Mitos_exceptGenomes_$taxID.nal";
 
 
 
@@ -108,7 +108,6 @@ unlink "Mitos_exceptGenomes_$taxID.nal";
 #*******************************************************************************#
 #*******************************************************************************#
 #*******************************************************************************#
-
 
 
 
@@ -137,7 +136,7 @@ for (my $retstart2 = 0; $retstart2 < $count2; $retstart2 += $retmax2) {
     my $efetch_out2 = get($efetch_url2);
     print $MITOGIPULL2 "$efetch_out2";
     if ($retstart2 % 10000 == 0){
-        print "$retstart2 GIs of $count total processed.\n"
+        print "$retstart2 GIs of $count2 total processed.\n"
     }
 }
 close $MITOGIPULL2;
@@ -158,12 +157,12 @@ close $MITOGIOUT2;
 unlink "data/mitoEUTILpull_fullmtgenome.txt"; #deletes temporary file
 
 
-#Create the actual vertmito blast database
-system("blastdb_aliastool -db nt -dbtype nucl -gilist data/mitoGIs_fullmtgenomes_$taxID.txt -out fullmtgenomes_$taxID -title fullmtgenomes_$taxID"); #Mac testing version
-#system('blastdb_aliastool -db allNuc -dbtype nucl -gilist data/mitoGIs_$taxID.txt -out /Volumes/Spinster/data/blastdb/vertMito -title vertMito') #Linux production version
-copy("fullmtgenomes_$taxID.n.gil", "data/db/fullmtgenomes_$taxID.n.gil") or die "File cannot be copied: $!\n";
-copy("fullmtgenomes_$taxID.nal", "data/db/fullmtgenomes_$taxID.nal") or die "File cannot be copied: $!\n";
-unlink "fullmtgenomes_$taxID.n.gil";
-unlink "fullmtgenomes_$taxID.nal";
+##Create the actual vertmito blast database
+#system("blastdb_aliastool -db nt -dbtype nucl -gilist data/mitoGIs_fullmtgenomes_$taxID.txt -out fullmtgenomes_$taxID -title fullmtgenomes_$taxID"); #Mac testing version
+##system('blastdb_aliastool -db allNuc -dbtype nucl -gilist data/mitoGIs_$taxID.txt -out /Volumes/Spinster/data/blastdb/vertMito -title vertMito') #Linux production version
+#copy("fullmtgenomes_$taxID.n.gil", "data/db/fullmtgenomes_$taxID.n.gil") or die "File cannot be copied: $!\n";
+#copy("fullmtgenomes_$taxID.nal", "data/db/fullmtgenomes_$taxID.nal") or die "File cannot be copied: $!\n";
+#unlink "fullmtgenomes_$taxID.n.gil";
+#unlink "fullmtgenomes_$taxID.nal";
 
-
+print "***subset_mito_db.pl finished executing.***\n"

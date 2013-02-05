@@ -1,5 +1,8 @@
 #!/usr/bin/perl
 
+#remove_mito_gis_from_gi_lists.pl
+#Usage: perl remove_mito_gis_from_gi_lists.pl --taxID 8948
+
 use strict;
 use warnings;
 use Getopt::Long;
@@ -8,16 +11,36 @@ my $taxID;
 GetOptions ("taxid=i" => \$taxID);
 
 #create a big hash for all the mitochondrial GIs
+<<<<<<< HEAD
 print "Creating a hash for all mitochondrial GIs from data/mitoGIs_$taxID.txt.\n";
 my %allMitoHash;
 open (my $allMitoGiFile, "<", "data/mitoGIs_$taxID.txt") || die "Couldn't open the full mito GI file for reading: $!";
 while (my $mitoGI = <$allMitoGiFile>) {
     $allMitoHash{$mitoGI} = 1;
-}
-close($allMitoGiFile);
-print "Finished creating hash for all mitochondrial GIs.\n";
+=======
+#Create big hashes for mitochondrial GIs (one for genomes, one for non-genomes)
+print "Creating hashes for all GIs from data/mitoGIs.txt and data/mitoGIs_fullmtgenomes_$taxID.txt.\n";
+my %allMitoNoGenomesHash;
+my %allMitoGenomesHash;
 
-#create a hash for each family where each GI is a hash key, and check it against %allMitoHash
+
+open (my $allMitoNoGenomesGiFile, "<", "data/mitoGIs_nogenomes_$taxID.txt") || die "Couldn't open the full mito GI file for reading: $!";
+while (my $mitoGI = <$allMitoNoGenomesGiFile>) {
+    $allMitoNoGenomesHash{$mitoGI} = 1;
+>>>>>>> 25c4055870690b0bb85b7aed0c5f925b81ec60fa
+}
+close($allMitoNoGenomesGiFile);
+print "Finished creating hash for non-genome mitochondrial GIs.\n";
+
+open (my $allMitoGenomesGiFile, "<", "data/mitoGIs_fullmtgenomes_$taxID.txt") || die "Couldn't open the full mito GI file for reading: $!";
+while (my $mitoGenomeGI = <$allMitoGenomesGiFile>) {
+    $allMitoGenomesHash{$mitoGenomeGI} = 1;
+}
+close($allMitoGenomesGiFile);
+print "Finished creating hash for mitochondrial genome GIs.\n";
+
+
+#create a hash for each family where each GI is a hash key, and check it against the mito hashes
 print "Creating individual hashes for each family holding all GIs, then filtering against full mitochondrial hash.\n";
 opendir(DIRECTORY, "data/gi_lists");
 my @AllGI_Files = readdir(DIRECTORY); #this just holds a list of names of the txt files in the directory
@@ -33,19 +56,24 @@ foreach my $giTextFile (@AllGI_Files) {
     }
     close($currentFamily_fh);
     
-    my $mitoFileName = $familyTaxID . "mito" . ".txt";
+    my $mitoNoGenomesFileName = $familyTaxID . "_mito_nogenomes" . ".txt";
+    my $mitoGenomesFileName = $familyTaxID . "_mito_genomes.txt";
     my $nucFileName = $familyTaxID . "nuc" . ".txt";
-    open (my $currentFamilyMito, ">", "data/gi_lists/$mitoFileName") || die "Couldn't create family mito GI file: $!";
+    open (my $currentFamilyMitoNoGenomes, ">", "data/gi_lists/$mitoNoGenomesFileName") || die "Couldn't create family mito GI file: $!";
+    open (my $currentFamilyMitoGenomes, ">", "data/gi_lists/$mitoGenomesFileName") || die "Couldn't create family mito GI file: $!";
     open (my $currentFamilyNuc, ">", "data/gi_lists/$nucFileName") || die "Couldn't create family nuc GI file: $!";
     #compare hash to mitochondrial hash. If no match print to new nonMito file. If match print to family mito file.
     foreach my $giKey (keys %familyHash) {
-        if (exists $allMitoHash{$giKey}) {
-            print $currentFamilyMito "$giKey";
+        if (exists $allMitoNoGenomesHash{$giKey}) {
+            print $currentFamilyMitoNoGenomes "$giKey";
+        } elsif (exists $allMitoGenomesHash{$giKey}) {
+            print $currentFamilyMitoGenomes "$giKey";
         } else {
             print $currentFamilyNuc "$giKey";
         }
     }
-    close $currentFamilyMito;
+    close $currentFamilyMitoNoGenomes;
+    close $currentFamilyMitoGenomes;
     close $currentFamilyNuc;
     unlink "data/gi_lists/$giTextFile";
   }

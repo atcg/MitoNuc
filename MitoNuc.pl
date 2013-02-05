@@ -45,13 +45,14 @@ use strict;
 use warnings;
 use Getopt::Long;
 
-my $taxID = 8948; #default to falconiformes (for testing). Vertebrata is 7742.
+my $taxID;
 GetOptions ("taxid=i" => \$taxID);
-if ($taxID == 8948) {
-   print "taxID not set by user. Using falconiformes (8948) as example.\n";
+if (!defined $taxID) {
+   print "Higher-level taxID not set by user. Using falconiformes (8948) as example.\n";
+   $taxID = 8948; #default to falconiformes (for testing). Vertebrata is 7742.
+} else {
+   print "User-set higher-level taxon ID: $taxID.\n"
 }
-
-print "Higher Level Taxon ID: $taxID.\n";
 
 unless(-d "data") {
     mkdir "data" or die "can't mkdir data: $!";
