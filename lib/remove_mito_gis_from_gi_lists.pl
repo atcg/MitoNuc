@@ -8,7 +8,7 @@ my $taxID;
 GetOptions ("taxid=i" => \$taxID);
 
 #create a big hash for all the mitochondrial GIs
-print "Creating a hash for all mitochondrial GIs from data/mitoGIs.txt.\n";
+print "Creating a hash for all mitochondrial GIs from data/mitoGIs_$taxID.txt.\n";
 my %allMitoHash;
 open (my $allMitoGiFile, "<", "data/mitoGIs_$taxID.txt") || die "Couldn't open the full mito GI file for reading: $!";
 while (my $mitoGI = <$allMitoGiFile>) {
