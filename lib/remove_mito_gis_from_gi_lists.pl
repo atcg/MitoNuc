@@ -11,6 +11,13 @@ my $taxID;
 GetOptions ("taxid=i" => \$taxID);
 
 #create a big hash for all the mitochondrial GIs
+<<<<<<< HEAD
+print "Creating a hash for all mitochondrial GIs from data/mitoGIs_$taxID.txt.\n";
+my %allMitoHash;
+open (my $allMitoGiFile, "<", "data/mitoGIs_$taxID.txt") || die "Couldn't open the full mito GI file for reading: $!";
+while (my $mitoGI = <$allMitoGiFile>) {
+    $allMitoHash{$mitoGI} = 1;
+=======
 #Create big hashes for mitochondrial GIs (one for genomes, one for non-genomes)
 print "Creating hashes for all GIs from data/mitoGIs.txt and data/mitoGIs_fullmtgenomes_$taxID.txt.\n";
 my %allMitoNoGenomesHash;
@@ -20,6 +27,7 @@ my %allMitoGenomesHash;
 open (my $allMitoNoGenomesGiFile, "<", "data/mitoGIs_nogenomes_$taxID.txt") || die "Couldn't open the full mito GI file for reading: $!";
 while (my $mitoGI = <$allMitoNoGenomesGiFile>) {
     $allMitoNoGenomesHash{$mitoGI} = 1;
+>>>>>>> 25c4055870690b0bb85b7aed0c5f925b81ec60fa
 }
 close($allMitoNoGenomesGiFile);
 print "Finished creating hash for non-genome mitochondrial GIs.\n";
