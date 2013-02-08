@@ -17,6 +17,7 @@ my %allMitoGenomesHash;
 
 open (my $allMitoNoGenomesGiFile, "<", "data/mitoGIs_nogenomes_$taxID.txt") || die "Couldn't open the full mito GI file for reading: $!";
 while (my $mitoGI = <$allMitoNoGenomesGiFile>) {
+    #Do I need to chomp here?
     $allMitoNoGenomesHash{$mitoGI} = 1;
 }
 close($allMitoNoGenomesGiFile);
@@ -24,6 +25,7 @@ print "Finished creating hash for non-genome mitochondrial GIs.\n";
 
 open (my $allMitoGenomesGiFile, "<", "data/mitoGIs_fullmtgenomes_$taxID.txt") || die "Couldn't open the full mito GI file for reading: $!";
 while (my $mitoGenomeGI = <$allMitoGenomesGiFile>) {
+    #Do I need to chomp here?
     $allMitoGenomesHash{$mitoGenomeGI} = 1;
 }
 close($allMitoGenomesGiFile);
